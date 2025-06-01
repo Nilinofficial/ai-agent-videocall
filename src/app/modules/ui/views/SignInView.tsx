@@ -144,10 +144,28 @@ const SignInView = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" type="button" className="w-full">
+                    <Button
+                      onClick={() => {
+                        authClient.signIn.social({
+                          provider: "google",
+                        });
+                      }}
+                      variant="outline"
+                      type="button"
+                      className="w-full"
+                    >
                       Google
                     </Button>
-                    <Button variant="outline" type="button" className="w-full">
+                    <Button
+                      onClick={() => {
+                        authClient.signIn.social({
+                          provider: "github",
+                        });
+                      }}
+                      variant="outline"
+                      type="button"
+                      className="w-full"
+                    >
                       Github
                     </Button>
                   </div>
