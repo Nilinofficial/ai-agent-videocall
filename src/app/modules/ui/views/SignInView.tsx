@@ -119,7 +119,7 @@ const SignInView = () => {
                   {!!error && (
                     <Alert className="bg-destructive/10 border-none">
                       <OctagonAlertIcon className="h-4 w-4 !text-destructive" />
-                      <AlertTitle>Error</AlertTitle>
+                      <AlertTitle>{error}</AlertTitle>
                     </Alert>
                   )}
 

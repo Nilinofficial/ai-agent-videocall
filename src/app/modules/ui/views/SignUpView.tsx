@@ -20,15 +20,22 @@ import { authClient } from "@/lib/auth.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(8, { message: "Password must be atleast 8 characters long" }),
-  userName: z
-    .string()
-    .min(3, { message: "Username must be atleast 3 characters long" }),
-});
+const formSchema = z
+  .object({
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(8, { message: "Password must be atleast 8 characters long" }),
+    confirmPassword: z.string(),
+
+    userName: z
+      .string()
+      .min(3, { message: "Username must be atleast 3 characters long" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 const SignUpView = () => {
   const router = useRouter();
@@ -41,6 +48,7 @@ const SignUpView = () => {
       email: "",
       password: "",
       userName: "",
+      confirmPassword: "",
     },
   });
 
@@ -79,7 +87,9 @@ const SignUpView = () => {
               >
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col items-center text-center">
-                    <h1 className="text-2xl font-bold">Hello User</h1>
+                    <h1 className="text-2xl font-bold">
+                      Let&apos;s get started
+                    </h1>
                     <p className="text-muted-foreground text-balance">
                       Create a new account
                     </p>
@@ -139,11 +149,30 @@ const SignUpView = () => {
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="********"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   {!!error && (
                     <Alert className="bg-destructive/10 border-none">
                       <OctagonAlertIcon className="h-4 w-4 !text-destructive" />
+                      {error}
                     </Alert>
                   )}
                   <Button type="submit" className="w-full">
