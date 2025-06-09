@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth.client";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -42,11 +43,11 @@ const SignInView = () => {
     setError(null);
     setIsLoading(true);
 
-     await authClient.signIn.email(
+    await authClient.signIn.email(
       {
         email: data.email,
         password: data.password,
-        callbackURL:"/"
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -124,7 +125,7 @@ const SignInView = () => {
                     </Alert>
                   )}
 
-                  <Button disabled={isLoading} type="submit" className="w-full">
+                  <Button disabled={isLoading} type="submit" className="w-full cursor-pointer">
                     {isLoading ? (
                       <>
                         <p>Signing in</p>
@@ -153,9 +154,9 @@ const SignInView = () => {
                       }}
                       variant="outline"
                       type="button"
-                      className="w-full"
+                      className="w-full cursor-pointer"
                     >
-                      Google
+                      <FaGoogle />
                     </Button>
                     <Button
                       onClick={() => {
@@ -165,9 +166,9 @@ const SignInView = () => {
                       }}
                       variant="outline"
                       type="button"
-                      className="w-full"
+                      className="w-full cursor-pointer"
                     >
-                      Github
+                      <FaGithub />
                     </Button>
                   </div>
 

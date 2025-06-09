@@ -19,6 +19,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const formSchema = z
   .object({
@@ -176,7 +177,7 @@ const SignUpView = () => {
                       {error}
                     </Alert>
                   )}
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full cursor-pointer">
                     {isLoading ? (
                       <>
                         <p>Signing up</p>
@@ -208,7 +209,7 @@ const SignUpView = () => {
                         });
                       }}
                     >
-                      Google
+                      <FaGoogle />
                     </Button>
                     <Button
                       variant="outline"
@@ -221,7 +222,7 @@ const SignUpView = () => {
                         });
                       }}
                     >
-                      Github
+                      <FaGithub />
                     </Button>
                   </div>
 
