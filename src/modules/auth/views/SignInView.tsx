@@ -12,32 +12,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Alert } from "@/components/ui/alert";
-import { OctagonAlertIcon } from "lucide-react";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { LoaderCircleIcon, OctagonAlertIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { authClient } from "@/lib/auth.client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { authClient } from "@/lib/auth.client";
 
-const formSchema = z
-  .object({
-    email: z.string().email(),
-    password: z
-      .string()
-      .min(8, { message: "Password must be atleast 8 characters long" }),
-    confirmPassword: z.string(),
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(3, { message: "Password is Required" }),
+});
 
-    userName: z
-      .string()
-      .min(3, { message: "Username must be atleast 3 characters long" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-const SignUpView = () => {
+const SignInView = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,8 +35,6 @@ const SignUpView = () => {
     defaultValues: {
       email: "",
       password: "",
-      userName: "",
-      confirmPassword: "",
     },
   });
 
@@ -56,19 +42,19 @@ const SignUpView = () => {
     setError(null);
     setIsLoading(true);
 
-    const { data: userData, error } = await authClient.signUp.email(
+     await authClient.signIn.email(
       {
         email: data.email,
         password: data.password,
-        name: data.userName,
+        callbackURL:"/"
       },
       {
         onSuccess: () => {
           router.push("/");
           setIsLoading(false);
         },
-        onError: (error) => {
-          setError(error.error.message);
+        onError: ({ error }) => {
+          setError(error.message);
           setIsLoading(false);
         },
       }
@@ -83,37 +69,17 @@ const SignUpView = () => {
             <div className="p-6 md:p-8">
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className=" p-6 md:p-8"
+                action="  p-6 md:p-8"
               >
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col items-center text-center">
-                    <h1 className="text-2xl font-bold">
-                      Let&apos;s get started
-                    </h1>
+                    <h1 className="text-2xl font-bold">Welcome back!</h1>
                     <p className="text-muted-foreground text-balance">
-                      Create a new account
+                      Login to your account
                     </p>
                   </div>
 
                   <div className="grid gap-3">
-                    <FormField
-                      control={form.control}
-                      name="userName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Username</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="Adam Joe"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
                     <FormField
                       control={form.control}
                       name="email"
@@ -149,39 +115,22 @@ const SignUpView = () => {
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirm Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="********"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
 
                   {!!error && (
                     <Alert className="bg-destructive/10 border-none">
                       <OctagonAlertIcon className="h-4 w-4 !text-destructive" />
-                      {error}
+                      <AlertTitle>{error}</AlertTitle>
                     </Alert>
                   )}
-                  <Button type="submit" className="w-full">
+
+                  <Button disabled={isLoading} type="submit" className="w-full">
                     {isLoading ? (
                       <>
-                        <p>Signing p</p>
+                        <p>Signing in</p>
                       </>
                     ) : (
-                      <> Sign up</>
+                      <> Sign in</>
                     )}
                   </Button>
 
@@ -197,38 +146,38 @@ const SignUpView = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <Button
-                      variant="outline"
-                      type="button"
-                      className="w-full cursor-pointer"
                       onClick={() => {
                         authClient.signIn.social({
                           provider: "google",
                         });
                       }}
+                      variant="outline"
+                      type="button"
+                      className="w-full"
                     >
                       Google
                     </Button>
                     <Button
-                      variant="outline"
-                      type="button"
-                      className="w-full cursor-pointer"
                       onClick={() => {
                         authClient.signIn.social({
                           provider: "github",
                         });
                       }}
+                      variant="outline"
+                      type="button"
+                      className="w-full"
                     >
                       Github
                     </Button>
                   </div>
 
                   <div className="text-center text-sm">
-                    Already have an account ?{" "}
+                    Don&apos;t have an account ?{" "}
                     <Link
-                      href="/sign-in"
+                      href="/sign-up"
                       className="underline underline-offset-4"
                     >
-                      Sign in
+                      Sign up
                     </Link>
                   </div>
                 </div>
@@ -251,4 +200,4 @@ const SignUpView = () => {
   );
 };
 
-export default SignUpView;
+export default SignInView;
